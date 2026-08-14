@@ -1,9 +1,0 @@
-The Asynchronous Bureaucracy Buster (Track: Taskmaster)
-The Problem: Disputing insurance claims, medical bills, or canceling complex subscriptions is a messy, multi-step, weeks-long chore.
-The Agent: A background worker that takes a scanned bill, figures out why it was denied, and fights it for you.
-
-How it works: It uses Gemini 3.5 to parse the uploaded bill, searches the web or uploaded policy documents for coverage rules, drafts an appeal, and sends it via an email API.
-
-The "Agentic" magic: It checks an inbox daily for a response. If the insurance company asks for more info, the agent pings you for it, then automatically replies to them.
-
-Why judges will love it: It solves a highly relatable, frustrating real-world problem, proves it can maintain context over days/weeks (asynchronous operations), and takes actual action (sending emails/drafting forms).
