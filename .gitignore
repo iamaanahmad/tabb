@@ -11,7 +11,7 @@ build/
 .env.local
 .env.*.local
 hackathon-details.txt
-
+my-plan.txt
 # Memory bank data (optional local runtime data)
 data/
 

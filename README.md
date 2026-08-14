@@ -1,113 +1,147 @@
 # 🛡️ The Asynchronous Bureaucracy Buster
 > **Track:** The Taskmaster  
-> **Built for:** All Things Agentic Hackathon  
-> **Powered by:** Gemini 3.5 Flash, Google GenAI SDK (`@google/genai`), Google Cloud Run, and Firestore Memory Bank
+> **Built for:** All Things Agentic Hackathon 2026  
+> **GitHub Repository:** [https://github.com/iamaanahmad/tabb.git](https://github.com/iamaanahmad/tabb.git)  
+> **Powered by:** Gemini 3.5 Flash, Google GenAI SDK (`@google/genai`), Google Cloud Run, and Persistent Firestore Memory Bank  
 
 ---
 
 ## 📌 Problem & Value Proposition
 
-Disputing denied insurance claims, out-of-network medical bills, and specialty drug step-therapy requirements is a frustrating, multi-step, weeks-long nightmare. Most AI applications today are simple chatbots that sit passively waiting for user questions.
+Disputing denied insurance claims, out-of-network emergency room bills, and arbitrary specialty medication step-therapy denials is a confusing, multi-step, weeks-long nightmare for patients. Most AI tools today are static chatbots that sit passively waiting for user prompts.
 
-**The Asynchronous Bureaucracy Buster** changes that. It is an autonomous background agent that takes scanned medical bills, identifies unlawful or arbitrary denial rationale, searches federal and state healthcare compliance mandates (such as the *No Surprises Act* and *ERISA Section 503*), drafts legally binding appeal letters, dispatches them, and monitors incoming carrier responses asynchronously over weeks without requiring manual user oversight.
-
----
-
-## 🏗️ System Architecture & Google Cloud Integration
-
-```
-                                +-----------------------------------+
-                                |     Scanned Medical Bill / PDF    |
-                                +-----------------+-----------------+
-                                                  |
-                                                  v
-                                +-----------------+-----------------+
-                                |      Express API / Cloud Run      |
-                                +-----------------+-----------------+
-                                                  |
-                                                  v
-                                +-----------------+-----------------+
-                                |      Gemini 3.5 Flash Model       |
-                                |  (Google GenAI SDK @google/genai) |
-                                +--------+----------------+---------+
-                                         |                |
-                       +-----------------+                +------------------+
-                       |                                                     |
-                       v                                                     v
-+----------------------+----------------------+            +-----------------+-----------------+
-|        Policy Research Knowledge Base       |            |    Persistent Cross-Session State    |
-|   - No Surprises Act (45 CFR § 149.110)     |            |             MEMORY BANK             |
-|   - ERISA Regulations (29 CFR § 2560.503-1) |            |  (Audit Trails & Reason Chains) |
-|   - State Step-Therapy Mandates             |            +-----------------+-----------------+
-+----------------------+----------------------+                              |
-                       |                                                     v
-                       v                                   +-----------------+-----------------+
-+----------------------+----------------------+            |  Asynchronous Background Worker |
-|   Formally Generated Legal Appeal Package   | ---------> |  (Cloud Scheduler / Carrier     |
-+---------------------------------------------+            |   Response Event Machine)       |
-                                                           +-----------------------------------+
-```
-
-### Google Cloud Infrastructure & Frameworks Used
-- **Gemini Model:** `gemini-2.5-flash` / Gemini 3.5 Flash for rapid multimodal document ingestion, clinical reasoning, and legal letter generation.
-- **Google Agent SDK:** Google GenAI SDK (`@google/genai`).
-- **Google Cloud Run:** Fully managed serverless container hosting the Express API and background worker loop.
-- **Memory Bank:** Persistent cross-session state store maintaining audit logs, reasoning chains, and case history.
+**The Asynchronous Bureaucracy Buster** redefines human-AI interaction. It is an autonomous background agent that:
+1. **Ingests & Analyzes Medical Bills:** Performs multimodal parameter extraction (Claim ID, Member ID, Denial Reason Code, Billed vs. Denied Amounts) from scanned PDFs or raw text notices using **Gemini 3.5 Flash** with structured JSON schemas.
+2. **Researches Healthcare Mandates:** Autonomously queries an integrated policy knowledge base of federal and state laws (including the *No Surprises Act 45 CFR § 149.110*, *ERISA § 503 (29 CFR § 2560.503-1)*, and *State Step-Therapy Exception Statutes*) to identify binding statutory violations.
+3. **Generates & Dispatches Legal Appeals:** Drafts legally binding, citation-backed Level 1 Appeal demand letters and dispatches them to carrier grievance departments.
+4. **Persistent Case Memory Bank:** Manages multi-week asynchronous workflows using a persistent Memory Bank that records reasoning chains, audit logs, and communication threads over extended timelines without losing context.
+5. **Asynchronous Event Machine:** Evaluates incoming carrier replies (approvals, documentation requests, or final denials) and autonomously updates the case state machine.
 
 ---
 
-## 🚀 Quick Spin-Up Instructions (Local & Cloud)
+## 🏗️ System Architecture
+
+```mermaid
+flowchart TD
+    User([User / Patient]) -->|Upload PDF / Medical Denial| ClientUI["Vite + React Glassmorphic Dashboard (Lucide Icons)"]
+    ClientUI -->|HTTP REST API| CloudRun["Google Cloud Run (Express API Gateway)"]
+    
+    subgraph Agent Core Execution
+        CloudRun -->|Multimodal Ingestion & JSON Parsing| Gemini["Gemini 3.5 Flash Model (@google/genai)"]
+        CloudRun -->|Policy Grounding & Appeal Synthesis| Gemini
+        CloudRun <-->|Query Legal Mandates| PolicyKB["Policy Knowledge Base\n(No Surprises Act, ERISA § 503, Step Therapy)"]
+    end
+    
+    subgraph Memory & Long-Running Persistence
+        CloudRun <-->|Read / Write State & Reason Chains| MemoryBank[("Persistent Memory Bank\n(Firestore / Case History & Audit Trail)")]
+    end
+    
+    subgraph Asynchronous Background Worker
+        CloudScheduler["Google Cloud Scheduler"] -->|Daily Check Trigger| PubSub["Cloud Pub/Sub Event Loop"]
+        PubSub -->|Process Async Carrier Replies| CloudRun
+        CloudRun -->|Transmit Appeal Package| Carrier[("Insurance Carrier Grievance Dept")]
+    end
+
+    classDef gcp fill:#4285F4,stroke:#333,stroke-width:2px,color:#fff;
+    classDef ai fill:#34A853,stroke:#333,stroke-width:2px,color:#fff;
+    classDef state fill:#FBBC05,stroke:#333,stroke-width:2px,color:#000;
+    class CloudRun,CloudScheduler,PubSub gcp;
+    class Gemini ai;
+    class MemoryBank state;
+```
+
+---
+
+## 🛠️ Google Tech Stack
+
+* **Google AI Model:** **Gemini 3.5 Flash** (`gemini-3.5-flash`) via Google AI Studio / Vertex AI for structured extraction, legal synthesis, and decision analysis.
+* **Google Agent SDK:** Google GenAI SDK (`@google/generative-ai` / `@google/genai`).
+* **Google Cloud Run:** Managed container execution for scalable, serverless backend deployment.
+* **Persistent Memory Bank:** Firestore / Cloud Storage state machine preserving cross-session reasoning chains and audit trails.
+* **Frontend:** Vite + React + Vanilla CSS glassmorphic application shell with modern `lucide-react` icons.
+
+---
+
+## 🚀 Quick Spin-Up Instructions
 
 ### Prerequisites
-- Node.js 18+ installed
-- Google Cloud account & Google AI Studio API Key (`GEMINI_API_KEY`)
+* [Node.js](https://nodejs.org/) (v18 or higher)
+* Git
+* Google Gemini API Key from [Google AI Studio](https://aistudio.google.com/)
 
-### 1. Local Setup
+### 1. Clone & Install
 ```bash
-# Clone repository
-git clone https://github.com/your-username/asynchronous-bureaucracy-buster.git
-cd asynchronous-bureaucracy-buster
+# Clone the official repository
+git clone https://github.com/iamaanahmad/tabb.git
+cd tabb
 
 # Install dependencies
 npm install
+```
 
-# Setup environment variables (Optional but recommended for full Gemini live API calls)
-# Create a .env file:
-echo "GEMINI_API_KEY=your_gemini_api_key_here" > .env
+### 2. Configure Environment Variables
+Create a `.env` file in the root directory:
+```bash
+GEMINI_API_KEY=your_google_gemini_api_key_here
+PORT=3001
+```
 
-# Run in development mode (starts both Vite UI & Express server)
-# Open two terminal tabs:
+### 3. Run Locally in Development Mode
+Open two terminal tabs:
 
-# Terminal 1: Backend Server (Port 3001)
+**Terminal 1: Start Backend API**
+```bash
 npm start
+```
 
-# Terminal 2: Frontend Dashboard (Port 3000)
+**Terminal 2: Start React Frontend**
+```bash
 npm run dev
 ```
 
-Navigate to `http://localhost:3000` in your web browser.
+Open [http://localhost:3000](http://localhost:3000) in your web browser.
 
 ---
 
 ## 🎯 Demo Walkthrough for Judges
 
-1. **Tab 1: Ingest Claim Document**
-   - Click any of the pre-packaged sample claims (e.g. *Out-of-Network Emergency Room Fee Denial* or *Diagnostic Lumbar Spine MRI Denial*) or upload your own PDF.
-   - Watch Gemini 3.5 Flash autonomously extract key parameters (Claim ID, Member ID, Denied Amount, Denial Code) and search the policy database for binding legal mandates.
+1. **📥 Ingest Claim Document (Tab 1):**
+   * Select any of the pre-loaded real-world medical denial samples (e.g. *Out-of-Network Emergency Room Denial* or *Lumbar Spine MRI Denial*), or upload a PDF/text notice.
+   * Watch **Gemini 3.5 Flash** autonomously extract parameters in structured JSON format and match against the policy database.
+2. **🗂️ Case Memory Bank (Tab 2):**
+   * Inspect the persistent case record, extracted denial rationale, and matched statutory citations.
+   * Click **Generate Appeal with Gemini 3.5** to dynamically construct a comprehensive 6,000+ character legal appeal letter.
+   * Click **Dispatch Appeal Email** to transition the state machine to `APPEAL_SENT`.
+3. **⚡ Async Carrier Simulator (Tab 3):**
+   * Simulate a webhook or inbound carrier email arriving 14 days later.
+   * Click any preset (e.g. *Claim Approved & Overturned*) and trigger the async agent response.
+   * The agent autonomously evaluates the response, resolves the claim (`WON_RESOLVED`), updates the Memory Bank, and appends to the immutable OpenTelemetry audit log.
+4. **☁️ GCP Architecture & Telemetry (Tab 4):**
+   * View live system metrics, total disputed dollar volume, active appeal counts, and raw OpenTelemetry JSON traces.
 
-2. **Tab 2: Case Memory Bank**
-   - View the active case record, policy citations, and reasoning chain.
-   - Click **Generate Appeal with Gemini 3.5** to draft a formal, legally backed Level 1 Appeal Letter.
-   - Click **Dispatch Appeal Email** to initiate the asynchronous background tracking loop.
+---
 
-3. **Tab 3: Async Carrier Simulator**
-   - Test background event handling by simulating an inbound carrier response (e.g., *Claim Approved & Overturned* or *Request Additional Info*).
-   - Observe how the agent autonomously updates the case status, logs audit events, and determines next actions.
+## 🚢 Google Cloud Deployment (Cloud Run)
 
-4. **Tab 4: GCP Architecture & Telemetry**
-   - Inspect live OpenTelemetry-compliant JSON logs, system metrics, and disputed dollar totals.
+The project includes a production-ready multi-stage `Dockerfile` and automated deployment script:
+
+```bash
+# Build and deploy to Google Cloud Run
+chmod +x deploy.sh
+./deploy.sh
+```
+
+Or deploy directly via Google Cloud SDK:
+```bash
+gcloud run deploy bureaucracy-buster \
+  --source . \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --set-env-vars GEMINI_API_KEY="your_api_key_here"
+```
 
 ---
 
 ## 📜 License
-MIT License. Built for the All Things Agentic Hackathon 2026.
+MIT License. Built with ❤️ for the **All Things Agentic Hackathon 2026**.

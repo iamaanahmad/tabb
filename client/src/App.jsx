@@ -1,4 +1,29 @@
 import React, { useState, useEffect } from 'react';
+import { 
+  Shield, 
+  Inbox, 
+  Database, 
+  Zap, 
+  Cloud, 
+  FileText, 
+  UploadCloud, 
+  Scale, 
+  Trash2, 
+  Send, 
+  Sparkles, 
+  Activity, 
+  BarChart3, 
+  Clock, 
+  CheckCircle2, 
+  DollarSign, 
+  AlertCircle,
+  FileCheck,
+  Server,
+  Cpu,
+  Play,
+  ArrowRight,
+  FolderOpen
+} from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('memory'); // 'intake' | 'memory' | 'simulator' | 'telemetry'
@@ -195,6 +220,9 @@ export default function App() {
         await fetchClaims();
         setSelectedClaim(data.result.claim);
         fetchTelemetry();
+        setActiveTab('memory');
+      } else {
+        throw new Error(data.error || 'Failed to process carrier response');
       }
     } catch (err) {
       alert('Error: ' + err.message);
@@ -215,52 +243,63 @@ export default function App() {
   };
 
   return (
-    <div className="app-container">
-      {/* Header Bar */}
-      <header className="header-bar">
+    <div className="app-layout">
+      {/* Sidebar Navigation */}
+      <aside className="app-sidebar">
         <div className="brand-title">
-          <div className="brand-icon">🛡️</div>
+          <div className="brand-icon">
+            <Shield size={22} color="#fff" />
+          </div>
           <div>
-            <h1 className="brand-name">Asynchronous Bureaucracy Buster</h1>
-            <span className="track-badge">Track: The Taskmaster</span>
+            <h1 className="brand-name" style={{ fontSize: '1.2rem', lineHeight: '1.2', marginBottom: '4px' }}>Bureaucracy Buster</h1>
+            <span className="track-badge">The Taskmaster</span>
           </div>
         </div>
 
-        <div className="header-status">
-          <div className="status-pill">
-            <span className="pulse-dot"></span>
-            <span>Gemini 3.5 Flash Agent Online</span>
-          </div>
-        </div>
-      </header>
+        <nav className="sidebar-nav">
+          <button 
+            className={`nav-item ${activeTab === 'intake' ? 'active' : ''}`}
+            onClick={() => setActiveTab('intake')}
+          >
+            <Inbox size={18} />
+            <span>Ingest Claim Document</span>
+          </button>
+          <button 
+            className={`nav-item ${activeTab === 'memory' ? 'active' : ''}`}
+            onClick={() => setActiveTab('memory')}
+          >
+            <Database size={18} />
+            <span>Case Memory Bank ({claims.length})</span>
+          </button>
+          <button 
+            className={`nav-item ${activeTab === 'simulator' ? 'active' : ''}`}
+            onClick={() => setActiveTab('simulator')}
+          >
+            <Zap size={18} />
+            <span>Async Carrier Simulator</span>
+          </button>
+          <button 
+            className={`nav-item ${activeTab === 'telemetry' ? 'active' : ''}`}
+            onClick={() => { setActiveTab('telemetry'); fetchTelemetry(); }}
+          >
+            <Cloud size={18} />
+            <span>GCP Architecture & Telemetry</span>
+          </button>
+        </nav>
+      </aside>
 
-      {/* Tabs */}
-      <nav className="tab-navigation">
-        <button 
-          className={`tab-btn ${activeTab === 'intake' ? 'active' : ''}`}
-          onClick={() => setActiveTab('intake')}
-        >
-          📥 Ingest Claim Document
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'memory' ? 'active' : ''}`}
-          onClick={() => setActiveTab('memory')}
-        >
-          🗂️ Case Memory Bank ({claims.length})
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'simulator' ? 'active' : ''}`}
-          onClick={() => setActiveTab('simulator')}
-        >
-          ⚡ Async Carrier Simulator
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'telemetry' ? 'active' : ''}`}
-          onClick={() => { setActiveTab('telemetry'); fetchTelemetry(); }}
-        >
-          ☁️ GCP Architecture & Telemetry
-        </button>
-      </nav>
+      {/* Main Content Area */}
+      <main className="app-main">
+        {/* Header Bar */}
+        <header className="header-bar">
+          <div style={{ flex: 1 }}></div>
+          <div className="header-status">
+            <div className="status-pill">
+              <span className="pulse-dot"></span>
+              <span>Gemini 3.5 Flash Online</span>
+            </div>
+          </div>
+        </header>
 
       {/* Loading & Status Banner */}
       {loading && (
@@ -278,7 +317,10 @@ export default function App() {
           {/* Quick Demo Pre-loaded Samples */}
           <div className="glass-card">
             <div className="card-header">
-              <h2 className="card-title">🚀 Fast Demo: Select a Sample Medical Bill / Denial</h2>
+              <h2 className="card-title">
+                <Sparkles size={20} color="var(--primary-cyan)" />
+                <span>Fast Demo: Select a Sample Medical Bill / Denial</span>
+              </h2>
               <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Click any sample to trigger agent parsing instantly</span>
             </div>
             <div className="sample-grid">
@@ -291,8 +333,9 @@ export default function App() {
                   <span className="sample-tag">{sample.category}</span>
                   <h3 style={{ fontSize: '1rem', fontWeight: '700', margin: '4px 0' }}>{sample.title}</h3>
                   <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{sample.filename}</p>
-                  <button className="btn btn-primary" style={{ width: '100%', marginTop: '12px' }}>
-                    Process with Gemini 3.5 →
+                  <button className="btn btn-primary" style={{ width: '100%', marginTop: '12px', gap: '8px' }}>
+                    <span>Process with Gemini 3.5</span>
+                    <ArrowRight size={16} />
                   </button>
                 </div>
               ))}
@@ -304,7 +347,10 @@ export default function App() {
             {/* File Upload */}
             <div className="glass-card">
               <div className="card-header">
-                <h3 className="card-title">📁 Upload Medical Document</h3>
+                <h3 className="card-title">
+                  <UploadCloud size={20} color="var(--primary-cyan)" />
+                  <span>Upload Medical Document</span>
+                </h3>
               </div>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
                 Upload a scanned bill, denial notice, or explanation of benefits (PDF / Text).
@@ -326,14 +372,17 @@ export default function App() {
             {/* Paste Raw Document Text */}
             <div className="glass-card">
               <div className="card-header">
-                <h3 className="card-title">📝 Paste Denial Letter Text</h3>
+                <h3 className="card-title">
+                  <FileText size={20} color="var(--primary-cyan)" />
+                  <span>Paste Denial Letter Text</span>
+                </h3>
               </div>
               <textarea 
                 rows="4" 
                 placeholder="Paste insurance denial text here..."
                 value={rawText}
                 onChange={(e) => setRawText(e.target.value)}
-                style={{
+                style={{ 
                   width: '100%',
                   background: 'rgba(15, 23, 42, 0.8)',
                   border: '1px solid #1e293b',
@@ -345,8 +394,9 @@ export default function App() {
                   marginBottom: '12px'
                 }}
               />
-              <button className="btn btn-primary" onClick={handleIngestRawText} style={{ width: '100%' }}>
-                Ingest & Analyze Text
+              <button className="btn btn-primary" onClick={handleIngestRawText} style={{ width: '100%', gap: '8px' }}>
+                <Sparkles size={16} />
+                <span>Ingest & Analyze Text</span>
               </button>
             </div>
           </div>
@@ -407,10 +457,10 @@ export default function App() {
                     <span className={`badge badge-${selectedClaim.status}`}>{selectedClaim.status}</span>
                     <button 
                       onClick={() => handleDeleteClaim(selectedClaim.id)} 
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent-rose)', fontSize: '1rem' }}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent-rose)', display: 'flex', alignItems: 'center', padding: '6px' }}
                       title="Delete Case"
                     >
-                      🗑️
+                      <Trash2 size={18} />
                     </button>
                   </div>
                 </div>
@@ -437,14 +487,17 @@ export default function App() {
 
                 {/* Denial Rationale */}
                 <div style={{ background: 'rgba(244, 63, 94, 0.08)', border: '1px solid rgba(244, 63, 94, 0.3)', borderRadius: '10px', padding: '12px' }}>
-                  <strong style={{ color: 'var(--accent-rose)', fontSize: '0.85rem' }}>INSUANRCE DENIAL RATIONALE:</strong>
+                  <strong style={{ color: 'var(--accent-rose)', fontSize: '0.85rem' }}>INSURANCE DENIAL RATIONALE:</strong>
                   <p style={{ fontSize: '0.9rem', marginTop: '4px' }}>{selectedClaim.denialDescription}</p>
                 </div>
               </div>
 
               {/* Policy Research Grounds */}
               <div className="glass-card">
-                <h3 className="card-title">⚖️ Autonomous Policy & Legal Research</h3>
+                <h3 className="card-title">
+                  <Scale size={20} color="var(--primary-cyan)" />
+                  <span>Autonomous Policy & Legal Research</span>
+                </h3>
                 <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '12px' }}>
                   The agent matched the denial reason against federal & state health compliance databases:
                 </p>
@@ -464,11 +517,15 @@ export default function App() {
               {/* Appeal Draft & Actions */}
               <div className="glass-card">
                 <div className="card-header">
-                  <h3 className="card-title">📜 Formal Appeal Package</h3>
+                  <h3 className="card-title">
+                    <FileCheck size={20} color="var(--primary-cyan)" />
+                    <span>Formal Appeal Package</span>
+                  </h3>
                   <div style={{ display: 'flex', gap: '10px' }}>
                     {!selectedClaim.appealLetter ? (
-                      <button className="btn btn-primary" onClick={() => handleGenerateAppeal(selectedClaim.id)}>
-                        Generate Appeal with Gemini 3.5 →
+                      <button className="btn btn-primary" onClick={() => handleGenerateAppeal(selectedClaim.id)} style={{ gap: '8px' }}>
+                        <span>Generate Appeal with Gemini 3.5</span>
+                        <ArrowRight size={16} />
                       </button>
                     ) : selectedClaim.status === 'APPEAL_DRAFTED' ? (
                       <div style={{ display: 'flex', gap: '8px' }}>
@@ -478,8 +535,9 @@ export default function App() {
                           onChange={(e) => setCustomRecipient(e.target.value)}
                           style={{ padding: '6px 10px', borderRadius: '8px', background: '#020617', border: '1px solid #334155', color: '#fff', fontSize: '0.85rem' }} 
                         />
-                        <button className="btn btn-success" onClick={() => handleDispatchAppeal(selectedClaim.id)}>
-                          Dispatch Appeal Email 🚀
+                        <button className="btn btn-success" onClick={() => handleDispatchAppeal(selectedClaim.id)} style={{ gap: '8px' }}>
+                          <Send size={16} />
+                          <span>Dispatch Appeal Email</span>
                         </button>
                       </div>
                     ) : (
@@ -499,7 +557,10 @@ export default function App() {
 
               {/* Audit Trail & Communications */}
               <div className="glass-card">
-                <h3 className="card-title">📜 Reasoning Chain & Audit Logs</h3>
+                <h3 className="card-title">
+                  <Activity size={20} color="var(--primary-cyan)" />
+                  <span>Reasoning Chain & Audit Logs</span>
+                </h3>
                 <div className="timeline">
                   {selectedClaim.auditTrail?.map((log) => (
                     <div key={log.id} className="timeline-item">
@@ -530,7 +591,10 @@ export default function App() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div className="glass-card">
             <div className="card-header">
-              <h2 className="card-title">⚡ Asynchronous Carrier Response Simulator</h2>
+              <h2 className="card-title">
+                <Zap size={20} color="var(--accent-amber)" />
+                <span>Asynchronous Carrier Response Simulator</span>
+              </h2>
               <span className="track-badge">Demonstrates Background Execution</span>
             </div>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
@@ -546,20 +610,26 @@ export default function App() {
                 <button 
                   className="btn btn-secondary" 
                   onClick={() => setSimulatorCarrierMsg("We received your appeal for Claim CLM-2026-884912. Upon re-review under the No Surprises Act, we have OVERTURNED the denial and approved reimbursement of $4,850.00 in full.")}
+                  style={{ gap: '8px' }}
                 >
-                  🟢 Preset 1: Claim Approved & Overturned
+                  <CheckCircle2 size={16} color="var(--accent-emerald)" />
+                  <span>Preset 1: Claim Approved & Overturned</span>
                 </button>
                 <button 
                   className="btn btn-secondary" 
                   onClick={() => setSimulatorCarrierMsg("Regarding your appeal for Claim PA-992140: We require additional physical therapy clinical chart notes from the treating physician prior to completing review.")}
+                  style={{ gap: '8px' }}
                 >
-                  🟡 Preset 2: Request Additional Info / Chart Notes
+                  <Clock size={16} color="var(--accent-amber)" />
+                  <span>Preset 2: Request Additional Info / Chart Notes</span>
                 </button>
                 <button 
                   className="btn btn-secondary" 
                   onClick={() => setSimulatorCarrierMsg("Level 1 Appeal Review Determination: Initial denial is UPHELD under plan rules. Further appeals must be submitted to the State Insurance Commissioner.")}
+                  style={{ gap: '8px' }}
                 >
-                  🔴 Preset 3: Final Denial (Escalation Trigger)
+                  <AlertCircle size={16} color="var(--accent-rose)" />
+                  <span>Preset 3: Final Denial (Escalation Trigger)</span>
                 </button>
               </div>
             </div>
@@ -586,9 +656,10 @@ export default function App() {
               className="btn btn-primary" 
               onClick={handleSimulateCarrierReply}
               disabled={!selectedClaim}
-              style={{ width: '100%' }}
+              style={{ width: '100%', gap: '8px' }}
             >
-              Trigger Async Agent Response for "{selectedClaim ? selectedClaim.patientName : 'No Claim Selected'}" 🚀
+              <Play size={16} />
+              <span>Trigger Async Agent Response for "{selectedClaim ? selectedClaim.patientName : 'No Claim Selected'}"</span>
             </button>
           </div>
         </div>
@@ -600,29 +671,40 @@ export default function App() {
           {/* Architecture Diagram Card */}
           <div className="glass-card">
             <div className="card-header">
-              <h2 className="card-title">☁️ Production Architecture on Google Cloud</h2>
+              <h2 className="card-title">
+                <Cloud size={20} color="var(--primary-cyan)" />
+                <span>Production Architecture on Google Cloud</span>
+              </h2>
               <span className="track-badge">Google Cloud Native</span>
             </div>
 
             <div className="arch-diagram">
               <div className="arch-node active">
-                <div style={{ fontSize: '1.5rem' }}>📄</div>
-                <strong style={{ fontSize: '0.9rem', display: 'block', marginTop: '6px' }}>Document Intake</strong>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
+                  <FolderOpen size={28} color="var(--primary-cyan)" />
+                </div>
+                <strong style={{ fontSize: '0.9rem', display: 'block' }}>Document Intake</strong>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>PDF / Scanned Bill OCR</span>
               </div>
               <div className="arch-node active">
-                <div style={{ fontSize: '1.5rem' }}>🤖</div>
-                <strong style={{ fontSize: '0.9rem', display: 'block', marginTop: '6px' }}>Gemini 3.5 Flash</strong>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
+                  <Sparkles size={28} color="var(--primary-cyan)" />
+                </div>
+                <strong style={{ fontSize: '0.9rem', display: 'block' }}>Gemini 3.5 Flash</strong>
                 <span style={{ fontSize: '0.75rem', color: 'var(--primary-cyan)' }}>Google GenAI SDK</span>
               </div>
               <div className="arch-node active">
-                <div style={{ fontSize: '1.5rem' }}>💾</div>
-                <strong style={{ fontSize: '0.9rem', display: 'block', marginTop: '6px' }}>Memory Bank</strong>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
+                  <Database size={28} color="var(--accent-purple)" />
+                </div>
+                <strong style={{ fontSize: '0.9rem', display: 'block' }}>Memory Bank</strong>
                 <span style={{ fontSize: '0.75rem', color: 'var(--accent-purple)' }}>Firestore / Cloud Storage</span>
               </div>
               <div className="arch-node active">
-                <div style={{ fontSize: '1.5rem' }}>⏰</div>
-                <strong style={{ fontSize: '0.9rem', display: 'block', marginTop: '6px' }}>Async Worker</strong>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
+                  <Cpu size={28} color="var(--accent-emerald)" />
+                </div>
+                <strong style={{ fontSize: '0.9rem', display: 'block' }}>Async Worker</strong>
                 <span style={{ fontSize: '0.75rem', color: 'var(--accent-emerald)' }}>Cloud Run + Pub/Sub</span>
               </div>
             </div>
@@ -633,7 +715,7 @@ export default function App() {
             <div className="metrics-grid">
               <div className="metric-card">
                 <div className="metric-icon" style={{ background: 'rgba(56, 189, 248, 0.15)', color: 'var(--primary-cyan)' }}>
-                  📊
+                  <BarChart3 size={24} />
                 </div>
                 <div>
                   <div className="metric-val">{telemetry.telemetry.totalClaimsIngested}</div>
@@ -643,7 +725,7 @@ export default function App() {
 
               <div className="metric-card">
                 <div className="metric-icon" style={{ background: 'rgba(245, 158, 11, 0.15)', color: 'var(--accent-amber)' }}>
-                  ⏳
+                  <Clock size={24} />
                 </div>
                 <div>
                   <div className="metric-val">{telemetry.telemetry.activeAsyncAppeals}</div>
@@ -653,7 +735,7 @@ export default function App() {
 
               <div className="metric-card">
                 <div className="metric-icon" style={{ background: 'rgba(16, 185, 129, 0.15)', color: 'var(--accent-emerald)' }}>
-                  🎉
+                  <CheckCircle2 size={24} />
                 </div>
                 <div>
                   <div className="metric-val">{telemetry.telemetry.wonClaims}</div>
@@ -663,7 +745,7 @@ export default function App() {
 
               <div className="metric-card">
                 <div className="metric-icon" style={{ background: 'rgba(168, 85, 247, 0.15)', color: 'var(--accent-purple)' }}>
-                  💵
+                  <DollarSign size={24} />
                 </div>
                 <div>
                   <div className="metric-val">{telemetry.telemetry.totalDisputedValue}</div>
@@ -675,11 +757,15 @@ export default function App() {
 
           {/* System Telemetry JSON */}
           <div className="glass-card">
-            <h3 className="card-title">🖥️ OpenTelemetry System Audit JSON</h3>
+            <h3 className="card-title">
+              <Server size={20} color="var(--primary-cyan)" />
+              <span>OpenTelemetry System Audit JSON</span>
+            </h3>
             <pre className="code-view">{JSON.stringify(telemetry, null, 2)}</pre>
           </div>
         </div>
       )}
+      </main>
     </div>
   );
 }

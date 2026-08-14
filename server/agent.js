@@ -49,7 +49,7 @@ export class BureaucracyAgent {
     if (ai) {
       try {
         const model = ai.getGenerativeModel({ 
-          model: 'gemini-1.5-flash',
+          model: 'gemini-3.5-flash',
           generationConfig: { responseMimeType: "application/json" }
         });
         
@@ -153,7 +153,7 @@ ${docText}`);
 
     if (ai) {
       try {
-        const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
+        const model = ai.getGenerativeModel({ model: 'gemini-3.5-flash' });
         const response = await model.generateContent(`You are an expert healthcare advocate and ERISA healthcare attorney. Write a formal, legally binding, highly persuasive Appeal Letter disputing an adverse benefit determination.
 
 Claim Information:
@@ -243,7 +243,7 @@ Format requirements:
     if (ai) {
       try {
         const model = ai.getGenerativeModel({ 
-          model: 'gemini-1.5-flash',
+          model: 'gemini-3.5-flash',
           generationConfig: { responseMimeType: "application/json" }
         });
         const response = await model.generateContent(`Analyze this incoming response email from an insurance carrier regarding an active claim dispute. Return JSON:
